@@ -1,0 +1,153 @@
+sources:
+  # ============ AI ============
+  - id: arxiv-cs-ai
+    name: arXiv cs.AI
+    type: rss
+    url: https://rss.arxiv.org/rss/cs.AI
+    category: ai
+    enabled: true
+
+  - id: arxiv-cs-cl
+    name: arXiv cs.CL (NLP)
+    type: rss
+    url: https://rss.arxiv.org/rss/cs.CL
+    category: ai
+    enabled: true
+
+  - id: arxiv-cs-lg
+    name: arXiv cs.LG (Learning)
+    type: rss
+    url: https://rss.arxiv.org/rss/cs.LG
+    category: ai
+    enabled: true
+
+  - id: huggingface-papers
+    name: HuggingFace Daily Papers
+    type: rss
+    url: https://jamesg.blog/hf-papers.xml
+    category: ai
+    enabled: true
+
+  - id: anthropic-news
+    name: Anthropic News
+    type: rss
+    url: https://www.anthropic.com/rss.xml
+    category: ai
+    enabled: false  # 404 — need to find current URL
+
+  - id: openai-blog
+    name: OpenAI Blog
+    type: rss
+    url: https://openai.com/news/rss.xml
+    category: ai
+    enabled: true
+
+  - id: deepmind-blog
+    name: Google DeepMind Blog
+    type: rss
+    url: https://deepmind.google/blog/rss.xml
+    category: ai
+    enabled: true
+
+  - id: hn-ai
+    name: Hacker News (AI filter)
+    type: hackernews
+    query: "AI OR LLM OR Anthropic OR OpenAI OR Claude"
+    min_points: 50
+    category: ai
+    enabled: true
+
+  - id: reddit-ml
+    name: r/MachineLearning
+    type: reddit
+    subreddit: MachineLearning
+    listing: top
+    time_filter: day
+    limit: 25
+    category: ai
+    enabled: true
+
+  - id: reddit-localllama
+    name: r/LocalLLaMA
+    type: reddit
+    subreddit: LocalLLaMA
+    listing: top
+    time_filter: day
+    limit: 25
+    category: ai
+    enabled: true
+
+  - id: reddit-claudeai
+    name: r/ClaudeAI
+    type: reddit
+    subreddit: ClaudeAI
+    listing: top
+    time_filter: day
+    limit: 15
+    category: ai
+    enabled: true
+
+  # ============ 经济 ============
+  - id: nber-papers
+    name: NBER Working Papers
+    type: rss
+    url: https://back.nber.org/rss/new.xml
+    category: econ
+    enabled: true
+
+  - id: arxiv-econ-gn
+    name: arXiv econ.GN
+    type: rss
+    url: https://rss.arxiv.org/rss/econ.GN
+    category: econ
+    enabled: true
+
+  - id: arxiv-q-fin
+    name: arXiv q-fin
+    type: rss
+    url: https://rss.arxiv.org/rss/q-fin
+    category: econ
+    enabled: true
+
+  - id: rieti-jp
+    name: RIETI 日本経済産業研究所
+    type: rss
+    url: https://www.rieti.go.jp/jp/rss/index.rdf
+    category: econ
+    enabled: true
+
+  - id: voxeu
+    name: VoxEU (CEPR)
+    type: rss
+    url: https://cepr.org/rss/vox-content
+    category: econ
+    enabled: true
+
+  - id: marginal-revolution
+    name: Marginal Revolution
+    type: rss
+    url: https://marginalrevolution.com/feed
+    category: econ
+    enabled: true
+
+  - id: cepr-dp
+    name: CEPR Discussion Papers
+    type: rss
+    url: https://cepr.org/rss/discussion-paper
+    category: econ
+    enabled: false  # 需要先验证 URL，可能要换 RSSHub
+
+  # ============ 中文经济期刊（RSSHub）============
+  - id: cnki-ceq
+    name: 经济学(季刊)
+    type: rss
+    url: https://rsshub.app/cnki/journal/JJXU
+    category: econ
+    enabled: false  # 验证 CNKI 缩写后开启
+
+  - id: cnki-rkyj
+    name: 人口研究
+    type: rss
+    url: https://rsshub.app/cnki/journal/RKYZ
+    category: econ
+    enabled: false

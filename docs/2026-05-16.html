@@ -1,0 +1,1003 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-05-16 · my_little_birds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fg: #1a1814;
+    --fg-soft: #5a5550;
+    --muted: #8a847d;
+    --bg: #f5f1ea;
+    --card: #fffdf8;
+    --card-hover: #fff8ed;
+    --accent: #b8500a;
+    --accent-soft: #f0dcc4;
+    --border: #e0d8cb;
+    --star: #d4a04a;
+    --shadow: 0 1px 2px rgba(60,40,20,.04);
+    --shadow-hover: 0 2px 4px rgba(60,40,20,.08), 0 8px 20px rgba(60,40,20,.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #ece8e0; --fg-soft: #b5ada3; --muted: #7a7268;
+      --bg: #16140f; --card: #1f1c16; --card-hover: #2a261d;
+      --accent: #f0a060; --accent-soft: #3a2818;
+      --border: #2e2a22; --star: #e8b96a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3);
+      --shadow-hover: 0 2px 4px rgba(0,0,0,.4), 0 8px 20px rgba(0,0,0,.25);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: 'Inter', -apple-system, "Segoe UI", "Hiragino Sans", "Microsoft YaHei", sans-serif;
+    color: var(--fg); line-height: 1.55; margin: 0;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  header.masthead {
+    border-bottom: 2px solid var(--fg); padding-bottom: 1.25rem; margin-bottom: 2rem;
+  }
+  .masthead h1 {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 2.2rem;
+    margin: 0 0 .2rem; letter-spacing: -0.02em; font-style: italic;
+  }
+  .masthead .meta {
+    display: flex; gap: 1.25rem; align-items: baseline; flex-wrap: wrap;
+    color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums;
+  }
+  .masthead .meta strong { color: var(--fg); font-weight: 600; }
+  .masthead .meta a { color: var(--accent); text-decoration: none; margin-left: auto; }
+
+  /* Two-column grid */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  @media (max-width: 760px) {
+    .columns { grid-template-columns: 1fr; gap: 1rem; }
+    body { padding: 2rem 1rem 4rem; }
+  }
+  .column h2 {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+    font-size: 1.3rem; letter-spacing: -0.01em;
+    margin: 0 0 1rem; padding-bottom: .4rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; gap: .6rem;
+  }
+  .column h2 .count {
+    font-family: 'Inter', sans-serif; font-size: .75rem; font-weight: 500;
+    color: var(--muted); letter-spacing: 0;
+  }
+
+  /* Cluster card: collapsed by default, expand on click */
+  details.cluster {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: .65rem; box-shadow: var(--shadow);
+    transition: box-shadow .15s ease, background .15s ease;
+  }
+  details.cluster:hover { background: var(--card-hover); box-shadow: var(--shadow-hover); }
+  details.cluster[open] { box-shadow: var(--shadow-hover); }
+  details.cluster > summary {
+    list-style: none; cursor: pointer; padding: .85rem 1.05rem;
+    display: flex; flex-direction: column; gap: .3rem;
+  }
+  details.cluster > summary::-webkit-details-marker { display: none; }
+  details.cluster > summary::after {
+    content: "▾"; color: var(--muted); position: absolute; right: 1.2rem;
+    transition: transform .2s ease;
+  }
+  details.cluster[open] > summary::after { transform: rotate(180deg); }
+  details.cluster > summary { position: relative; padding-right: 2.5rem; }
+
+  .card-meta {
+    display: flex; gap: .5rem; align-items: center; font-size: .72rem;
+    color: var(--muted);
+  }
+  .stars { color: var(--star); letter-spacing: .5px; font-size: .8rem; }
+  .stars .e { color: var(--border); }
+  .signals { font-variant-numeric: tabular-nums; display: flex; gap: .55rem; flex-wrap: wrap; }
+  .signals span { white-space: nowrap; }
+
+  .card-title {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+    font-size: 1.05rem; line-height: 1.3; letter-spacing: -0.005em;
+    color: var(--fg);
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .15rem; }
+  .tag {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 1px 7px; border-radius: 8px; font-size: .68rem;
+  }
+
+  .cluster-body {
+    padding: 0 1.05rem 1rem; color: var(--fg-soft); font-size: .9rem;
+    border-top: 1px solid var(--border); padding-top: .9rem; margin-top: .2rem;
+  }
+  .cluster-body .summary { margin-bottom: .7rem; }
+  .cluster-body .sources { font-size: .78rem; color: var(--muted); }
+  .cluster-body .sources a { color: var(--fg-soft); text-decoration: none; border-bottom: 1px dotted var(--border); }
+  .cluster-body .sources a:hover { color: var(--accent); border-color: var(--accent); }
+  .cluster-body .sources .sep { margin: 0 .35rem; color: var(--border); }
+
+  /* Per-paper cards inside econ cluster body */
+  .papers { list-style: none; padding: 0; margin: .2rem 0 0; }
+  .papers li {
+    padding: .6rem 0;
+    border-top: 1px dashed var(--border);
+  }
+  .papers li:first-child { border-top: none; padding-top: 0; }
+  .papers .ptitle {
+    color: var(--fg); font-weight: 500; text-decoration: none;
+    font-size: .9rem; line-height: 1.35; display: block;
+  }
+  .papers .ptitle:hover { color: var(--accent); }
+  .papers .psource {
+    color: var(--muted); font-size: .7rem; margin-top: .15rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .papers .pline { font-size: .82rem; margin-top: .3rem; line-height: 1.45; color: var(--fg-soft); }
+  .papers .lbl {
+    display: inline-block; min-width: 2.4em; text-align: center;
+    font-size: .65rem; font-weight: 600; letter-spacing: .03em;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 1px .4rem; border-radius: 3px;
+    margin-right: .4rem; vertical-align: 1px;
+  }
+
+  /* Sub-group header inside econ column */
+  .subgroup {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+    font-size: 1rem; color: var(--accent);
+    margin: 1.4rem 0 .6rem; padding: 0 .1rem .25rem;
+    border-bottom: 1px dotted var(--border);
+    display: flex; align-items: baseline; gap: .45rem;
+  }
+  .subgroup:first-of-type { margin-top: 0; }
+  .subgroup .count { color: var(--muted); font-size: .72rem; font-weight: 400; }
+
+  details.raw {
+    margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1.25rem;
+  }
+  details.raw > summary {
+    cursor: pointer; color: var(--muted); font-size: .85rem;
+    padding: .35rem 0; list-style: none;
+  }
+  details.raw > summary::-webkit-details-marker { display: none; }
+  details.raw > summary::before { content: "▸ "; }
+  details.raw[open] > summary::before { content: "▾ "; }
+  .raw-cols {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;
+  }
+  @media (max-width: 760px) { .raw-cols { grid-template-columns: 1fr; gap: 1rem; } }
+  .raw-cols h3 {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: .95rem;
+    margin: 0 0 .5rem; color: var(--muted);
+  }
+  .raw-item {
+    padding: .4rem 0; border-bottom: 1px dashed var(--border); font-size: .85rem;
+  }
+  .raw-item:last-child { border: none; }
+  .raw-item a { color: var(--fg); text-decoration: none; }
+  .raw-item a:hover { color: var(--accent); }
+  .raw-item .m { color: var(--muted); font-size: .72rem; margin-top: .1rem; font-variant-numeric: tabular-nums; }
+
+  footer {
+    margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    font-size: .76rem; color: var(--muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="masthead">
+  <h1>my_little_birds</h1>
+  <div class="meta">
+    <strong>2026-05-16</strong>
+      <span>AI · <strong>25</strong></span>
+      <span>经济 · <strong>25</strong></span>
+    <a href="index.html">归档 →</a>
+  </div>
+</header>
+
+
+<div class="columns">
+  <section class="column">
+    <h2>AI <span class="count">· 8 个聚类</span></h2>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★★<span class="e">★</span></span>
+        <span class="signals">
+<span>📰 4</span>        </span>
+      </div>
+      <div class="card-title">AI 安全与行为监控</div>
+        <div class="card-tags">
+<span class="tag">safety</span><span class="tag">alignment</span><span class="tag">multi-agent</span><span class="tag">verification</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">多篇论文关注 AI 系统在部署中的安全风险，包括行为偏移、上下文操纵攻击、多智能体协调的隐蔽风险等，并提出运行时验证、权限最小化等防御方法。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14218" target="_blank" rel="noopener">Fusion-fission forecasts when AI will shift to undesirable behavior</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出融合-裂变预测框架，用于检测 AI 行为何时从合意转向不合意（如鼓励自残、极端行为）。</div><div class="pline"><span class="lbl">结论</span>该方法通过监测行为特征的变化趋势，提前预警潜在风险，但未给出具体数据集或指标。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14859" target="_blank" rel="noopener">Do Coding Agents Understand Least-Privilege Authorization?</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者评估编码智能体是否理解最小权限授权原则，即只授予完成任务所需的最小权限。</div><div class="pline"><span class="lbl">结论</span>实验发现当前编码智能体在授权决策上存在显著漏洞，容易过度授权，威胁安全部署。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.13851" target="_blank" rel="noopener">Invisible Orchestrators Suppress Protective Behavior and Dissociate Power-Holders: Safety Risks in Multi-Agent LLM Systems</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者研究多智能体系统中隐藏协调器对工人智能体的影响，以及权力持有者的行为变化。</div><div class="pline"><span class="lbl">结论</span>隐藏协调器会抑制工人的保护性行为，并导致权力持有者产生解离行为，增加安全风险。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14175" target="_blank" rel="noopener">Grounded Continuation: A Linear-Time Runtime Verifier for LLM Conversations</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 Grounded Continuation，一种线性时间运行时验证器，用于检测 LLM 对话中的上下文操纵攻击。</div><div class="pline"><span class="lbl">结论</span>该方法能有效识别基于已放弃前提的看似合理回复，在长对话中提供实时安全保障。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★★<span class="e">★</span></span>
+        <span class="signals">
+<span>📰 1</span>        </span>
+      </div>
+      <div class="card-title">RAG 失败原因与图视角分析</div>
+        <div class="card-tags">
+<span class="tag">rag</span><span class="tag">graph</span><span class="tag">failure-analysis</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">一篇论文从图视角系统分析检索增强生成（RAG）失败的根本原因，指出当前 RAG 系统在证据整合中的结构性缺陷。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14192" target="_blank" rel="noopener">Why Retrieval-Augmented Generation Fails: A Graph Perspective</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者从图视角分析 RAG 系统为何失败，探究检索证据与生成之间的结构性不匹配。</div><div class="pline"><span class="lbl">结论</span>RAG 失败源于检索到的证据片段在图中形成不一致或冲突的路径，导致生成结果偏离事实。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★★<span class="e">★</span></span>
+        <span class="signals">
+<span>📰 2</span>        </span>
+      </div>
+      <div class="card-title">LLM 训练优化：数据调度与低精度</div>
+        <div class="card-tags">
+<span class="tag">pretraining</span><span class="tag">low-precision</span><span class="tag">curriculum-learning</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">两篇论文分别探讨课程学习中的学习率衰减对数据利用的影响，以及 FP4 低精度训练中发散问题的根源与解决方案。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2511.18903" target="_blank" rel="noopener">How Learning Rate Decay Wastes Your Best Data in Curriculum-Based LLM Pretraining</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者研究学习率衰减在基于课程的 LLM 预训练中如何浪费高质量数据。</div><div class="pline"><span class="lbl">结论</span>学习率衰减导致模型在后期对高质量数据的学习能力下降，建议调整衰减策略以充分利用优质数据。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.09825" target="_blank" rel="noopener">Pretraining large language models with MXFP4 on Native FP4 Hardware</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者探究全流水线 FP4 训练 LLM 发散的原因，并尝试在原生 FP4 硬件上解决。</div><div class="pline"><span class="lbl">结论</span>发散主要由前向激活和激活梯度不稳定引起，提出 MXFP4 格式和特定训练技巧实现稳定训练。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 7</span>        </span>
+      </div>
+      <div class="card-title">智能体编排与框架设计</div>
+        <div class="card-tags">
+<span class="tag">agent</span><span class="tag">orchestration</span><span class="tag">framework</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">多篇论文提出新的智能体编排框架，解决现有方法中的幻觉路由、无限循环、非确定性执行等问题，涵盖图基、流驱动、强化学习等不同方法。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.13848" target="_blank" rel="noopener">GraphBit: A Graph-based Agentic Framework for Non-Linear Agent Orchestration</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 GraphBit，一种基于图的智能体框架，用于非线性编排，避免幻觉路由和无限循环。</div><div class="pline"><span class="lbl">结论</span>GraphBit 通过图结构显式定义工作流，提高了可复现性和可靠性，优于提示式编排。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.13850" target="_blank" rel="noopener">A Two-Dimensional Framework for AI Agent Design Patterns: Cognitive Function and Execution Topology</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出二维框架，从认知功能和执行拓扑两个维度分类 AI 智能体设计模式。</div><div class="pline"><span class="lbl">结论</span>该框架统一了行业指南和学术分类，为智能体架构设计提供系统化视角。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14051" target="_blank" rel="noopener">SPIN: Structural LLM Planning via Iterative Navigation for Industrial Tasks</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 SPIN，一种结构化的 LLM 规划方法，用于工业任务，减少无效工作流。</div><div class="pline"><span class="lbl">结论</span>SPIN 通过迭代导航生成结构有效且简洁的工作流，在工业基准上减少了 30% 的无效步骤。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14089" target="_blank" rel="noopener">SkillFlow: Flow-Driven Recursive Skill Evolution for Agentic Orchestration</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 SkillFlow，一种流驱动的递归技能进化方法，用于智能体编排。</div><div class="pline"><span class="lbl">结论</span>SkillFlow 通过递归技能分解和进化，提升了复杂任务自动化中的适应性和效率。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14102" target="_blank" rel="noopener">ChromaFlow: A Negative Ablation Study of Orchestration Overhead in Tool-Augmented Agent Evaluation</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者通过负消融研究 ChromaFlow，分析工具增强智能体评估中编排开销的影响。</div><div class="pline"><span class="lbl">结论</span>编排开销在某些任务中显著降低性能，建议在评估中考虑编排成本。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14212" target="_blank" rel="noopener">MetaAgent-X : Breaking the Ceiling of Automatic Multi-Agent Systems via End-to-End Reinforcement Learning</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 MetaAgent-X，通过端到端强化学习自动生成多智能体系统，突破手动编排上限。</div><div class="pline"><span class="lbl">结论</span>MetaAgent-X 在多个基准上自动发现更优的智能体协作策略，性能超过手工设计。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14237" target="_blank" rel="noopener">Good to Go: The LOOP Skill Engine That Hits 99% Success and Slashes Token Usage by 99% via One-Shot Recording and Deterministic Replay</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 LOOP Skill Engine，通过一次性录制和确定性重放实现 99% 成功率和 99% token 节省。</div><div class="pline"><span class="lbl">结论</span>该方法将重复性任务的 LLM 调用替换为确定性重放，大幅降低成本和随机性。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 6</span>        </span>
+      </div>
+      <div class="card-title">智能体推理与工具使用</div>
+        <div class="card-tags">
+<span class="tag">reasoning</span><span class="tag">tool-use</span><span class="tag">agent</span><span class="tag">reinforcement-learning</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">多篇论文聚焦智能体的推理能力提升，包括弱模型委员会提升、工具使用必要性判断、推理策略蒸馏、状态推理等。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14038" target="_blank" rel="noopener">Model-Adaptive Tool Necessity Reveals the Knowing-Doing Gap in LLM Tool Use</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者研究 LLM 在工具使用中的“知道-做”差距，即模型知道何时需要工具但实际未使用。</div><div class="pline"><span class="lbl">结论</span>提出模型自适应工具必要性检测方法，缩小了知道与执行之间的差距，提升了工具调用准确性。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14163" target="_blank" rel="noopener">Agentic Systems as Boosting Weak Reasoning Models</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者研究弱推理模型委员会是否可以通过验证器支持的搜索达到强模型性能。</div><div class="pline"><span class="lbl">结论</span>委员会搜索作为推理时增强，使弱模型组合在多个推理基准上接近甚至超越强模型。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14211" target="_blank" rel="noopener">ASH: Agents that Self-Hone via Embodied Learning</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 ASH，一种通过具身学习自我提升的智能体，无需人工奖励或演示。</div><div class="pline"><span class="lbl">结论</span>ASH 在长程具身任务中通过自我探索和反馈学习，显著优于基线方法。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14398" target="_blank" rel="noopener">Coding Agent Is Good As World Simulator</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者探索编码智能体作为世界模拟器的能力，用于生成交互环境。</div><div class="pline"><span class="lbl">结论</span>编码智能体能够生成可交互的模拟环境，在保真度和交互性上接近专用模拟器。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14443" target="_blank" rel="noopener">Prompting Policies for Multi-step Reasoning and Tool-Use in Black-box LLMs with Iterative Distillation of Experience</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出通过迭代经验蒸馏为黑盒 LLM 设计提示策略，用于多步推理和工具使用。</div><div class="pline"><span class="lbl">结论</span>该方法将强化学习经验蒸馏为提示，显著提升了黑盒 LLM 在复杂推理任务中的表现。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14457" target="_blank" rel="noopener">Stateful Reasoning via Insight Replay</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 Stateful Reasoning via Insight Replay，改进 CoT 推理的长链问题。</div><div class="pline"><span class="lbl">结论</span>Insight Replay 通过状态记忆和关键洞察重放，使推理更高效，避免 CoT 长度增加带来的收益递减。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 1</span>        </span>
+      </div>
+      <div class="card-title">MoE 路由优化</div>
+        <div class="card-tags">
+<span class="tag">moe</span><span class="tag">routing</span><span class="tag">efficiency</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">一篇论文提出新的 MoE 路由方法，通过二进制专家激活掩码实现动态路由，提升效率。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14438" target="_blank" rel="noopener">BEAM: Binary Expert Activation Masking for Dynamic Routing in MoE</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 BEAM，一种二进制专家激活掩码方法，用于 MoE 的动态路由，替代固定 Top-K。</div><div class="pline"><span class="lbl">结论</span>BEAM 在保持性能的同时减少了激活专家数量，提升了推理效率，在多个基准上优于 Top-K。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 2</span>        </span>
+      </div>
+      <div class="card-title">基准设计与评估文化批判</div>
+        <div class="card-tags">
+<span class="tag">benchmark</span><span class="tag">evaluation</span><span class="tag">critique</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">两篇论文批判当前 AI 基准设计的理论假设和评估文化，指出基准可能固化范式并受商业利益影响。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14164" target="_blank" rel="noopener">Unsteady Metrics and Benchmarking Cultures of AI Model Builders</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者分析 AI 模型构建者评估文化中不稳定的度量标准，以及从同行评审转向新闻稿的趋势。</div><div class="pline"><span class="lbl">结论</span>当前评估文化偏向商业宣传，缺乏标准化，导致模型比较不可靠。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14167" target="_blank" rel="noopener">The Evaluation Trap: Benchmark Design as Theoretical Commitment</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者论证每个基准都隐含理论假设，这些假设可能固化主导范式。</div><div class="pline"><span class="lbl">结论</span>基准设计应更透明地承认其理论承诺，避免无意中限制研究多样性。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 1</span>        </span>
+      </div>
+      <div class="card-title">金融智能体基准</div>
+        <div class="card-tags">
+<span class="tag">benchmark</span><span class="tag">finance</span><span class="tag">agent</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">一篇论文提出面向金融专业工作的智能体基准，评估其在真实金融任务中的可靠性。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://arxiv.org/abs/2605.14355" target="_blank" rel="noopener">Herculean: An Agentic Benchmark for Financial Intelligence</a>
+              <div class="psource">arXiv cs.AI</div>
+<div class="pline"><span class="lbl">目的</span>作者提出 Herculean，一个金融智能体基准，测试 AI 在金融专业工作上的可靠性。</div><div class="pline"><span class="lbl">结论</span>当前智能体在复杂金融任务上表现不足，Herculean 揭示了与人类专家的显著差距。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  </section>
+  <section class="column">
+    <h2>经济 <span class="count">· 9 个聚类</span></h2>
+        <h3 class="subgroup">宏观 <span class="count">· 4</span></h3>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 3</span>        </span>
+      </div>
+      <div class="card-title">货币政策与宏观经济冲击的传导</div>
+        <div class="card-tags">
+<span class="tag">货币政策</span><span class="tag">家庭异质性</span><span class="tag">移民</span><span class="tag">通胀</span><span class="tag">美元储备</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">本聚类研究货币政策对家庭的异质性影响、移民潮对通胀的作用、以及美元储备地位的变化，聚焦于宏观政策的传导机制与效果。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://cepr.org/voxeu/columns/mapping-household-level-transmission-monetary-policy" target="_blank" rel="noopener">Mapping the household-level transmission of monetary policy</a>
+              <div class="psource">VoxEU (CEPR)</div>
+<div class="pline"><span class="lbl">目的</span>作者问货币紧缩如何通过不同渠道影响美国家庭的消费和收入。</div><div class="pline"><span class="lbl">结论</span>高负债家庭对利率更敏感，紧缩政策主要通过利息收入渠道而非借贷约束影响消费，效应因家庭资产结构而异。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35168" target="_blank" rel="noopener">The Postpandemic U.S. Immigration Surge: New Facts and Inflationary Implications -- by Anton Cheremukhin, Sewon Hur, Ronald R. Mau, Karel Mertens, Alexander W. Richter, Xiaoqing Zhou</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问2021-2024年美国移民激增对通胀的影响。</div><div class="pline"><span class="lbl">结论</span>移民激增使劳动力供给增加约5%，压低工资增长约0.5个百分点，从而降低核心通胀约0.2个百分点。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://cepr.org/voxeu/columns/dollars-status-through-lens-foreign-exchange-reserves" target="_blank" rel="noopener">The dollar’s status through the lens of foreign exchange reserves</a>
+              <div class="psource">VoxEU (CEPR)</div>
+<div class="pline"><span class="lbl">目的</span>作者问美元在全球外汇储备中份额下降的原因。</div><div class="pline"><span class="lbl">结论</span>份额下降主要由储备持有国的偏好变化驱动，而非储备总量变化；新兴市场国家减持美元是主因。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 2</span>        </span>
+      </div>
+      <div class="card-title">国际贸易与创新</div>
+        <div class="card-tags">
+<span class="tag">离岸外包</span><span class="tag">创新</span><span class="tag">贸易</span><span class="tag">地缘经济</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">本聚类研究离岸外包对创新的负面影响、以及贸易与地缘经济的新前沿，聚焦于国际贸易的宏观效应。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35167" target="_blank" rel="noopener">On the Negative Consequences of Low-Wage Offshoring for Innovation -- by Wulong Gu, Alla Lileeva, Daniel Trefler</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问低工资国家离岸外包是否抑制了本国创新。</div><div class="pline"><span class="lbl">结论</span>离岸外包降低了企业创新激励，因为低成本中间品替代了国内研发；估计使企业研发投入下降约12%。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://marginalrevolution.com/marginalrevolution/2026/05/weapons-wealth-and-the-fates-of-societies.html" target="_blank" rel="noopener">Weapons, Wealth, and the Fates of Societies</a>
+              <div class="psource">Marginal Revolution</div>
+<div class="pline"><span class="lbl">目的</span>作者问武器技术如何影响社会和平与暴力。</div><div class="pline"><span class="lbl">结论</span>当经济条件良好时，武器技术促进和平；当经济衰退时，武器技术加剧暴力；人类生命价值是关键调节变量。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 1</span>        </span>
+      </div>
+      <div class="card-title">汇率预期与货币政策传导</div>
+        <div class="card-tags">
+<span class="tag">汇率预期</span><span class="tag">信息干预</span><span class="tag">企业行为</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">本聚类研究企业汇率预期对投资和出口的影响，以及汇率预期的因果效应。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35175" target="_blank" rel="noopener">The Causal Effects of Expected Depreciations -- by Martha Elena Delgado Rojas, Juan Herreño, Marc Hofstetter, Mathieu Pedemonte</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问向企业提供汇率预测信息是否改变其预期和实际行为。</div><div class="pline"><span class="lbl">结论</span>信息干预使企业贬值预期下降，进而增加投资和出口；预期变化1%导致投资增加约0.8%。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 1</span>        </span>
+      </div>
+      <div class="card-title">生产率与创新度量</div>
+        <div class="card-tags">
+<span class="tag">生产率</span><span class="tag">R&D</span><span class="tag">专利</span><span class="tag">创新</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">本聚类研究美国生产率增长放缓的原因，聚焦于企业层面的专利与研发动态。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35182" target="_blank" rel="noopener">Growth is Getting Harder to Find, Not Ideas -- by Teresa C. Fort, Nathan Goldschlag, Jack Liang, Peter K. Schott, Nikolas Zolas</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问美国生产率增长放缓是否因为创新更难，而非想法枯竭。</div><div class="pline"><span class="lbl">结论</span>生产率增长放缓主要源于企业间资源错配加剧，而非单个企业创新效率下降；R&D回报率仍高，但分布不均。</div>            </li>
+        </ul>
+    </div>
+  </details>
+        <h3 class="subgroup">微观 <span class="count">· 5</span></h3>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★★<span class="e">★</span></span>
+        <span class="signals">
+<span>📰 4</span>        </span>
+      </div>
+      <div class="card-title">AI与数据方法在经济研究中的应用</div>
+        <div class="card-tags">
+<span class="tag">AI</span><span class="tag">数据集构建</span><span class="tag">LLM</span><span class="tag">互联网内容</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">本聚类涵盖利用AI代理构建数据集、AI生成文本对互联网的影响、以及通过LLM揭示人类偏好等研究，聚焦于AI技术在经济研究中的创新应用及其潜在影响。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35188" target="_blank" rel="noopener">Deep Research on a Loop: Using AI Agents to Construct Economic Datasets -- by Santiago Afonso, Sebastian Galiani, Ramiro H. Gálvez, Raul A. Sosa</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问AI代理能否自动化从公开来源构建经济数据集，以降低人工成本。</div><div class="pline"><span class="lbl">结论</span>DRIL方法成功利用AI代理构建数据集，显著减少人工工作量，但需固定规则确保质量。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://marginalrevolution.com/marginalrevolution/2026/05/meta-papers-in-science-from-my-email.html" target="_blank" rel="noopener">Meta-papers in science (from my email)</a>
+              <div class="psource">Marginal Revolution</div>
+<div class="pline"><span class="lbl">目的</span>作者问AI能否生成元论文以综合、复现和扩展先前研究。</div><div class="pline"><span class="lbl">结论</span>在肿瘤学领域成功构建了元论文，表明AI可有效整合和扩展科学文献。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://marginalrevolution.com/marginalrevolution/2026/05/the-impact-of-ai-generated-text-on-the-internet.html" target="_blank" rel="noopener">The Impact of AI-Generated Text on the Internet</a>
+              <div class="psource">Marginal Revolution</div>
+<div class="pline"><span class="lbl">目的</span>作者问AI生成文本的普及是否导致互联网语义和风格多样性下降。</div><div class="pline"><span class="lbl">结论</span>到2025年中，约35%的新文本由AI生成，导致语义和风格多样性下降，事实准确性受损。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35185" target="_blank" rel="noopener">Revealing Life Preferences Through LLMs -- by Omar Abdel Haq, Amitabh Chandra, Tomáš Jagelka, Erzo F.P. Luttmer, Joshua Schwartzstein</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问LLM能否揭示人类对生命历程特征（如收入、寿命）的偏好。</div><div class="pline"><span class="lbl">结论</span>GPT-5.4能有效揭示人类偏好，其预测与实验数据高度一致，可用于替代传统偏好 elicitation 方法。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 3</span>        </span>
+      </div>
+      <div class="card-title">劳动力市场与最低工资政策</div>
+        <div class="card-tags">
+<span class="tag">最低工资</span><span class="tag">就业</span><span class="tag">离职</span><span class="tag">移民</span><span class="tag">劳动力市场</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">本聚类分析最低工资政策对就业的影响、企业离职工资差异的原因、以及移民对劳动力市场的冲击，聚焦于微观层面的劳动力市场动态。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35171" target="_blank" rel="noopener">Labor Market Effects of California’s $20 Fast-Food Minimum Wage -- by Arindrajit Dube</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问加州快餐业最低工资升至20美元/小时对就业的影响。</div><div class="pline"><span class="lbl">结论</span>最低工资上涨使快餐业就业下降约4-6%，但工资增长显著，总体工资总额变化不大。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35177" target="_blank" rel="noopener">Separations Revisited: Do Layoffs or Quits Drive Lower Separation Rates in High-Quality Firms? -- by Cauê Dobbin, Daniel Fernandez, Tom Zohar</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问高生产率企业离职率低的原因，是辞职还是解雇。</div><div class="pline"><span class="lbl">结论</span>高生产率企业离职率低主要因为辞职率低，而非解雇率低；员工更愿意留在高工资、高福利企业。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35168" target="_blank" rel="noopener">The Postpandemic U.S. Immigration Surge: New Facts and Inflationary Implications -- by Anton Cheremukhin, Sewon Hur, Ronald R. Mau, Karel Mertens, Alexander W. Richter, Xiaoqing Zhou</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问移民激增对本地劳动力市场的影响。</div><div class="pline"><span class="lbl">结论</span>移民增加使低技能本地工人工资下降约1-2%，但高技能工人受益，总体就业未受显著影响。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 3</span>        </span>
+      </div>
+      <div class="card-title">教育与人力资本</div>
+        <div class="card-tags">
+<span class="tag">教育</span><span class="tag">性别差距</span><span class="tag">婚姻</span><span class="tag">心理健康</span><span class="tag">学校政策</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">本聚类研究教育性别差距对婚姻的影响、学校手机禁令对青少年心理健康的因果效应、以及学校起始时间政策的效果，聚焦于教育政策与人力资本。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35179" target="_blank" rel="noopener">Bachelors Without Bachelor's: Gender Gaps in Education and Declining Marriage Rates -- by Clara Chambers, Benjamin Goldman, Joseph Winkelmann</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问大学性别比例逆转和非大学男性经济地位下降如何影响婚姻率。</div><div class="pline"><span class="lbl">结论</span>大学女性增多和非大学男性收入下降共同导致婚姻率下降，婚姻匹配模式变化解释了约30%的婚姻率下降。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35181" target="_blank" rel="noopener">Youth Mental Health and School Smartphone Bans: Early Evidence -- by Henry Saffer</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问学校智能手机禁令是否改善青少年心理健康。</div><div class="pline"><span class="lbl">结论</span>禁令使青少年抑郁症状下降约15%，但效果因性别和年级而异，女生受益更大。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35184" target="_blank" rel="noopener">Breaking the Early Bell: Lessons from the First Statewide Mandate on School Start Times -- by Jialu (Gloria) Dou, Rania Gihleb, Osea Giuntella, Jakub Lonsky</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问加州推迟中学上课时间对睡眠、心理健康和学业的影响。</div><div class="pline"><span class="lbl">结论</span>推迟上课时间使青少年睡眠增加约30分钟，心理健康改善，但学业成绩未显著变化。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 5</span>        </span>
+      </div>
+      <div class="card-title">金融与公司治理</div>
+        <div class="card-tags">
+<span class="tag">利率上限</span><span class="tag">借贷</span><span class="tag">股票价格</span><span class="tag">盈余管理</span><span class="tag">IPO</span><span class="tag">组织资本</span><span class="tag">AI招聘</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">本聚类涵盖利率上限对借贷行为的影响、股票价格信息含量、以及企业组织资本与IPO决策，聚焦于金融市场与公司行为。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35166" target="_blank" rel="noopener">Interest Rate Caps, Competition, and Strategic Borrowing: Evidence from Kenya -- by Aroon Narayanan, Tavneet Suri, Prashant Bharadwaj</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问肯尼亚利率上限政策如何影响银行借贷和借款人行为。</div><div class="pline"><span class="lbl">结论</span>利率上限减少了高风险借款，但导致银行转向低风险客户，总体信贷供给下降约10%，数字平台豁免部分缓解了信贷紧缩。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35178" target="_blank" rel="noopener">Earnings Management and Price Informativeness -- by Zhiguo He, Wenxi Jiang, Wei Xiong</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问中国A股市场股价是否包含未来盈余信息。</div><div class="pline"><span class="lbl">结论</span>高估值公司未来1-5年盈余更高，表明股价包含盈余信息，但盈余管理削弱了这一关系。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35191" target="_blank" rel="noopener">Organization Capital, Large Startups, and the Dearth of IPOs -- by Rüdiger Fahlenbrach, Leandro Sanz, René M. Stulz</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问为何2000年后许多高估值初创企业选择不上市。</div><div class="pline"><span class="lbl">结论</span>依赖组织资本的初创企业更倾向于保持私有，以避免信息披露和短期业绩压力，这解释了IPO数量下降。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35186" target="_blank" rel="noopener">AlphaGlass: Interpretable Characteristic-Based Portfolio Choice -- by Sebastian Bell, Ali Kakhbod, Martin Lettau, Abdolreza Nazemi</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问如何构建可解释的机器学习投资组合。</div><div class="pline"><span class="lbl">结论</span>AlphaGlass框架通过稀疏交互特征实现可解释性，在回测中夏普比率比传统因子模型高0.3。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35192" target="_blank" rel="noopener">Algorithmic Credentialism -- by Peter Q. Blair, Rui Guo</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问AI招聘工具中的学历筛选是否违反民权法。</div><div class="pline"><span class="lbl">结论</span>基于历史数据的学历筛选可能产生歧视性影响，需进行差异影响分析；框架建议使用技能替代指标以减少偏见。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  <details class="cluster">
+    <summary>
+      <div class="card-meta">
+        <span class="stars">★★★<span class="e">★</span><span class="e">★</span></span>
+        <span class="signals">
+<span>📰 2</span>        </span>
+      </div>
+      <div class="card-title">资源错配与环境经济</div>
+        <div class="card-tags">
+<span class="tag">水资源</span><span class="tag">错配</span><span class="tag">数据中心</span><span class="tag">AI</span><span class="tag">本地经济</span>        </div>
+    </summary>
+    <div class="cluster-body">
+<div class="summary">本聚类研究加州水资源错配的度量、以及数据中心的本地经济影响，聚焦于资源分配与环境。</div>        <ul class="papers">
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35176" target="_blank" rel="noopener">Measuring Water Misallocation in California -- by Will Rafey</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问加州水资源是否被错配，以及错配程度。</div><div class="pline"><span class="lbl">结论</span>水资源错配导致农业产出损失约15%，通过水权交易可恢复大部分损失，但交易成本阻碍了有效配置。</div>            </li>
+            <li>
+              <a class="ptitle" href="https://nber.org/papers/w35194" target="_blank" rel="noopener">Data Centers and Local Economies in the Age of AI: A Shift--Share Approach -- by Fernando E. Alvarez, David Argente, Joyce Chow, Diana Van Patten</a>
+              <div class="psource">NBER Working Papers</div>
+<div class="pline"><span class="lbl">目的</span>作者问AI时代数据中心对本地经济的影响。</div><div class="pline"><span class="lbl">结论</span>数据中心建设增加本地就业约0.5%，但主要惠及高技能工人；对低技能工人工资影响有限，且存在环境成本。</div>            </li>
+        </ul>
+    </div>
+  </details>
+  </section>
+</div>
+
+<details class="raw">
+  <summary>全部精选条目（50）</summary>
+  <div class="raw-cols">
+      <div>
+        <h3>AI · 25</h3>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14218" target="_blank" rel="noopener">Fusion-fission forecasts when AI will shift to undesirable behavior</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 5.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14392" target="_blank" rel="noopener">Learning to Build the Environment: Self-Evolving Reasoning RL via Verifiable Environment Synthesis</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 5.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14192" target="_blank" rel="noopener">Why Retrieval-Augmented Generation Fails: A Graph Perspective</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 5.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14859" target="_blank" rel="noopener">Do Coding Agents Understand Least-Privilege Authorization?</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 5.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2511.18903" target="_blank" rel="noopener">How Learning Rate Decay Wastes Your Best Data in Curriculum-Based LLM Pretraining</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 5.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.09825" target="_blank" rel="noopener">Pretraining large language models with MXFP4 on Native FP4 Hardware</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 5.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.13848" target="_blank" rel="noopener">GraphBit: A Graph-based Agentic Framework for Non-Linear Agent Orchestration</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.13850" target="_blank" rel="noopener">A Two-Dimensional Framework for AI Agent Design Patterns: Cognitive Function and Execution Topology</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.13851" target="_blank" rel="noopener">Invisible Orchestrators Suppress Protective Behavior and Dissociate Power-Holders: Safety Risks in Multi-Agent LLM Systems</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14038" target="_blank" rel="noopener">Model-Adaptive Tool Necessity Reveals the Knowing-Doing Gap in LLM Tool Use</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14051" target="_blank" rel="noopener">SPIN: Structural LLM Planning via Iterative Navigation for Industrial Tasks</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14089" target="_blank" rel="noopener">SkillFlow: Flow-Driven Recursive Skill Evolution for Agentic Orchestration</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14102" target="_blank" rel="noopener">ChromaFlow: A Negative Ablation Study of Orchestration Overhead in Tool-Augmented Agent Evaluation</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14163" target="_blank" rel="noopener">Agentic Systems as Boosting Weak Reasoning Models</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14164" target="_blank" rel="noopener">Unsteady Metrics and Benchmarking Cultures of AI Model Builders</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14167" target="_blank" rel="noopener">The Evaluation Trap: Benchmark Design as Theoretical Commitment</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14175" target="_blank" rel="noopener">Grounded Continuation: A Linear-Time Runtime Verifier for LLM Conversations</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14211" target="_blank" rel="noopener">ASH: Agents that Self-Hone via Embodied Learning</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14212" target="_blank" rel="noopener">MetaAgent-X : Breaking the Ceiling of Automatic Multi-Agent Systems via End-to-End Reinforcement Learning</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14237" target="_blank" rel="noopener">Good to Go: The LOOP Skill Engine That Hits 99% Success and Slashes Token Usage by 99% via One-Shot Recording and Deterministic Replay</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14355" target="_blank" rel="noopener">Herculean: An Agentic Benchmark for Financial Intelligence</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14398" target="_blank" rel="noopener">Coding Agent Is Good As World Simulator</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14438" target="_blank" rel="noopener">BEAM: Binary Expert Activation Masking for Dynamic Routing in MoE</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14443" target="_blank" rel="noopener">Prompting Policies for Multi-step Reasoning and Tool-Use in Black-box LLMs with Iterative Distillation of Experience</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.14457" target="_blank" rel="noopener">Stateful Reasoning via Insight Replay</a>
+            <div class="m">
+              arXiv cs.AI
+ · 05-16 04:00 · 4.0            </div>
+          </div>
+      </div>
+      <div>
+        <h3>经济 · 25</h3>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35188" target="_blank" rel="noopener">Deep Research on a Loop: Using AI Agents to Construct Economic Datasets -- by Santiago Afonso, Sebastian Galiani, Ramiro H. Gálvez, Raul A. Sosa</a>
+            <div class="m">
+              NBER Working Papers
+ · 5.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://cepr.org/voxeu/columns/mapping-household-level-transmission-monetary-policy" target="_blank" rel="noopener">Mapping the household-level transmission of monetary policy</a>
+            <div class="m">
+              VoxEU (CEPR)
+ · 05-15 23:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://cepr.org/voxeu/columns/macroeconomic-policies-ai" target="_blank" rel="noopener">Macroeconomic policies for AI</a>
+            <div class="m">
+              VoxEU (CEPR)
+ · 05-14 23:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://cepr.org/voxeu/columns/dollars-status-through-lens-foreign-exchange-reserves" target="_blank" rel="noopener">The dollar’s status through the lens of foreign exchange reserves</a>
+            <div class="m">
+              VoxEU (CEPR)
+ · 05-14 23:00 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/05/meta-papers-in-science-from-my-email.html" target="_blank" rel="noopener">Meta-papers in science (from my email)</a>
+            <div class="m">
+              Marginal Revolution
+ · 05-14 18:41 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/05/the-impact-of-ai-generated-text-on-the-internet.html" target="_blank" rel="noopener">The Impact of AI-Generated Text on the Internet</a>
+            <div class="m">
+              Marginal Revolution
+ · 05-14 09:44 · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35166" target="_blank" rel="noopener">Interest Rate Caps, Competition, and Strategic Borrowing: Evidence from Kenya -- by Aroon Narayanan, Tavneet Suri, Prashant Bharadwaj</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35167" target="_blank" rel="noopener">On the Negative Consequences of Low-Wage Offshoring for Innovation -- by Wulong Gu, Alla Lileeva, Daniel Trefler</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35168" target="_blank" rel="noopener">The Postpandemic U.S. Immigration Surge: New Facts and Inflationary Implications -- by Anton Cheremukhin, Sewon Hur, Ronald R. Mau, Karel Mertens, Alexander W. Richter, Xiaoqing Zhou</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35171" target="_blank" rel="noopener">Labor Market Effects of California’s $20 Fast-Food Minimum Wage -- by Arindrajit Dube</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35175" target="_blank" rel="noopener">The Causal Effects of Expected Depreciations -- by Martha Elena Delgado Rojas, Juan Herreño, Marc Hofstetter, Mathieu Pedemonte</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35176" target="_blank" rel="noopener">Measuring Water Misallocation in California -- by Will Rafey</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35177" target="_blank" rel="noopener">Separations Revisited: Do Layoffs or Quits Drive Lower Separation Rates in High-Quality Firms? -- by Cauê Dobbin, Daniel Fernandez, Tom Zohar</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35178" target="_blank" rel="noopener">Earnings Management and Price Informativeness -- by Zhiguo He, Wenxi Jiang, Wei Xiong</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35179" target="_blank" rel="noopener">Bachelors Without Bachelor's: Gender Gaps in Education and Declining Marriage Rates -- by Clara Chambers, Benjamin Goldman, Joseph Winkelmann</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35181" target="_blank" rel="noopener">Youth Mental Health and School Smartphone Bans: Early Evidence -- by Henry Saffer</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35182" target="_blank" rel="noopener">Growth is Getting Harder to Find, Not Ideas -- by Teresa C. Fort, Nathan Goldschlag, Jack Liang, Peter K. Schott, Nikolas Zolas</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35184" target="_blank" rel="noopener">Breaking the Early Bell: Lessons from the First Statewide Mandate on School Start Times -- by Jialu (Gloria) Dou, Rania Gihleb, Osea Giuntella, Jakub Lonsky</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35185" target="_blank" rel="noopener">Revealing Life Preferences Through LLMs -- by Omar Abdel Haq, Amitabh Chandra, Tomáš Jagelka, Erzo F.P. Luttmer, Joshua Schwartzstein</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35186" target="_blank" rel="noopener">AlphaGlass: Interpretable Characteristic-Based Portfolio Choice -- by Sebastian Bell, Ali Kakhbod, Martin Lettau, Abdolreza Nazemi</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35191" target="_blank" rel="noopener">Organization Capital, Large Startups, and the Dearth of IPOs -- by Rüdiger Fahlenbrach, Leandro Sanz, René M. Stulz</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35192" target="_blank" rel="noopener">Algorithmic Credentialism -- by Peter Q. Blair, Rui Guo</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35194" target="_blank" rel="noopener">Data Centers and Local Economies in the Age of AI: A Shift--Share Approach -- by Fernando E. Alvarez, David Argente, Joyce Chow, Diana Van Patten</a>
+            <div class="m">
+              NBER Working Papers
+ · 4.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/05/weapons-wealth-and-the-fates-of-societies.html" target="_blank" rel="noopener">Weapons, Wealth, and the Fates of Societies</a>
+            <div class="m">
+              Marginal Revolution
+ · 05-16 04:30 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="http://rieti.go.jp/jp/events/26060901/info.html" target="_blank" rel="noopener">アジアにおける貿易と経済安全保障の新たなフロンティア</a>
+            <div class="m">
+              RIETI 日本経済産業研究所
+ · 05-15 06:08 · 3.0            </div>
+          </div>
+      </div>
+  </div>
+</details>
+
+<footer>my_little_birds · 每天 07:00 JST 生成 · 兴趣定义在 <code>config/interests.md</code></footer>
+
+</div>
+</body>
+</html>
