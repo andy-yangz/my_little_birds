@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-09-25 · my_little_birds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fg: #1a1814;
+    --fg-soft: #5a5550;
+    --muted: #8a847d;
+    --bg: #f5f1ea;
+    --card: #fffdf8;
+    --card-hover: #fff8ed;
+    --accent: #b8500a;
+    --accent-soft: #f0dcc4;
+    --border: #e0d8cb;
+    --star: #d4a04a;
+    --shadow: 0 1px 2px rgba(60,40,20,.04);
+    --shadow-hover: 0 2px 4px rgba(60,40,20,.08), 0 8px 20px rgba(60,40,20,.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #ece8e0; --fg-soft: #b5ada3; --muted: #7a7268;
+      --bg: #16140f; --card: #1f1c16; --card-hover: #2a261d;
+      --accent: #f0a060; --accent-soft: #3a2818;
+      --border: #2e2a22; --star: #e8b96a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3);
+      --shadow-hover: 0 2px 4px rgba(0,0,0,.4), 0 8px 20px rgba(0,0,0,.25);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: 'Inter', -apple-system, "Segoe UI", "Hiragino Sans", "Microsoft YaHei", sans-serif;
+    color: var(--fg); line-height: 1.55; margin: 0;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  header.masthead {
+    border-bottom: 2px solid var(--fg); padding-bottom: 1.25rem; margin-bottom: 2rem;
+  }
+  .masthead h1 {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 2.2rem;
+    margin: 0 0 .2rem; letter-spacing: -0.02em; font-style: italic;
+  }
+  .masthead .meta {
+    display: flex; gap: 1.25rem; align-items: baseline; flex-wrap: wrap;
+    color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums;
+  }
+  .masthead .meta strong { color: var(--fg); font-weight: 600; }
+  .masthead .meta a { color: var(--accent); text-decoration: none; margin-left: auto; }
+
+  /* Two-column grid */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  @media (max-width: 760px) {
+    .columns { grid-template-columns: 1fr; gap: 1rem; }
+    body { padding: 2rem 1rem 4rem; }
+  }
+  .column h2 {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+    font-size: 1.3rem; letter-spacing: -0.01em;
+    margin: 0 0 1rem; padding-bottom: .4rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; gap: .6rem;
+  }
+  .column h2 .count {
+    font-family: 'Inter', sans-serif; font-size: .75rem; font-weight: 500;
+    color: var(--muted); letter-spacing: 0;
+  }
+
+  /* Cluster card: collapsed by default, expand on click */
+  details.cluster {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: .65rem; box-shadow: var(--shadow);
+    transition: box-shadow .15s ease, background .15s ease;
+  }
+  details.cluster:hover { background: var(--card-hover); box-shadow: var(--shadow-hover); }
+  details.cluster[open] { box-shadow: var(--shadow-hover); }
+  details.cluster > summary {
+    list-style: none; cursor: pointer; padding: .85rem 1.05rem;
+    display: flex; flex-direction: column; gap: .3rem;
+  }
+  details.cluster > summary::-webkit-details-marker { display: none; }
+  details.cluster > summary::after {
+    content: "▾"; color: var(--muted); position: absolute; right: 1.2rem;
+    transition: transform .2s ease;
+  }
+  details.cluster[open] > summary::after { transform: rotate(180deg); }
+  details.cluster > summary { position: relative; padding-right: 2.5rem; }
+
+  .card-meta {
+    display: flex; gap: .5rem; align-items: center; font-size: .72rem;
+    color: var(--muted);
+  }
+  .stars { color: var(--star); letter-spacing: .5px; font-size: .8rem; }
+  .stars .e { color: var(--border); }
+  .signals { font-variant-numeric: tabular-nums; display: flex; gap: .55rem; flex-wrap: wrap; }
+  .signals span { white-space: nowrap; }
+
+  .card-title {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+    font-size: 1.05rem; line-height: 1.3; letter-spacing: -0.005em;
+    color: var(--fg);
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .15rem; }
+  .tag {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 1px 7px; border-radius: 8px; font-size: .68rem;
+  }
+
+  .cluster-body {
+    padding: 0 1.05rem 1rem; color: var(--fg-soft); font-size: .9rem;
+    border-top: 1px solid var(--border); padding-top: .9rem; margin-top: .2rem;
+  }
+  .cluster-body .summary { margin-bottom: .7rem; }
+  .cluster-body .sources { font-size: .78rem; color: var(--muted); }
+  .cluster-body .sources a { color: var(--fg-soft); text-decoration: none; border-bottom: 1px dotted var(--border); }
+  .cluster-body .sources a:hover { color: var(--accent); border-color: var(--accent); }
+  .cluster-body .sources .sep { margin: 0 .35rem; color: var(--border); }
+
+  /* Per-paper cards inside econ cluster body */
+  .papers { list-style: none; padding: 0; margin: .2rem 0 0; }
+  .papers li {
+    padding: .6rem 0;
+    border-top: 1px dashed var(--border);
+  }
+  .papers li:first-child { border-top: none; padding-top: 0; }
+  .papers .ptitle {
+    color: var(--fg); font-weight: 500; text-decoration: none;
+    font-size: .9rem; line-height: 1.35; display: block;
+  }
+  .papers .ptitle:hover { color: var(--accent); }
+  .papers .psource {
+    color: var(--muted); font-size: .7rem; margin-top: .15rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .papers .pline { font-size: .82rem; margin-top: .3rem; line-height: 1.45; color: var(--fg-soft); }
+  .papers .lbl {
+    display: inline-block; min-width: 2.4em; text-align: center;
+    font-size: .65rem; font-weight: 600; letter-spacing: .03em;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 1px .4rem; border-radius: 3px;
+    margin-right: .4rem; vertical-align: 1px;
+  }
+
+  /* Sub-group header inside econ column */
+  .subgroup {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+    font-size: 1rem; color: var(--accent);
+    margin: 1.4rem 0 .6rem; padding: 0 .1rem .25rem;
+    border-bottom: 1px dotted var(--border);
+    display: flex; align-items: baseline; gap: .45rem;
+  }
+  .subgroup:first-of-type { margin-top: 0; }
+  .subgroup .count { color: var(--muted); font-size: .72rem; font-weight: 400; }
+
+  details.raw {
+    margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1.25rem;
+  }
+  details.raw > summary {
+    cursor: pointer; color: var(--muted); font-size: .85rem;
+    padding: .35rem 0; list-style: none;
+  }
+  details.raw > summary::-webkit-details-marker { display: none; }
+  details.raw > summary::before { content: "▸ "; }
+  details.raw[open] > summary::before { content: "▾ "; }
+  .raw-cols {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;
+  }
+  @media (max-width: 760px) { .raw-cols { grid-template-columns: 1fr; gap: 1rem; } }
+  .raw-cols h3 {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: .95rem;
+    margin: 0 0 .5rem; color: var(--muted);
+  }
+  .raw-item {
+    padding: .4rem 0; border-bottom: 1px dashed var(--border); font-size: .85rem;
+  }
+  .raw-item:last-child { border: none; }
+  .raw-item a { color: var(--fg); text-decoration: none; }
+  .raw-item a:hover { color: var(--accent); }
+  .raw-item .m { color: var(--muted); font-size: .72rem; margin-top: .1rem; font-variant-numeric: tabular-nums; }
+
+  footer {
+    margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    font-size: .76rem; color: var(--muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="masthead">
+  <h1>my_little_birds</h1>
+  <div class="meta">
+    <strong>2026-09-25</strong>
+      <span>经济 · <strong>25</strong></span>
+      <span>AI · <strong>25</strong></span>
+    <a href="index.html">归档 →</a>
+  </div>
+</header>
+
+
+<div class="columns">
+</div>
+
+<details class="raw">
+  <summary>全部精选条目（50）</summary>
+  <div class="raw-cols">
+      <div>
+        <h3>经济 · 25</h3>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.26822" target="_blank" rel="noopener">HARN: Hierarchical Associative Resonance Network for Event-Driven Multi-Timeframe Forecasting</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.26861" target="_blank" rel="noopener">Rule-Based Pricing Algorithms and Market Outcomes: An Experimental Study</a>
+            <div class="m">
+              arXiv econ.GN
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27404" target="_blank" rel="noopener">When Trust Attracts Fraud: AI and Trust Arbitrage</a>
+            <div class="m">
+              arXiv econ.GN
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27686" target="_blank" rel="noopener">Mining Meaning: Measurement Error in AI-Assisted Literature Reviews</a>
+            <div class="m">
+              arXiv econ.GN
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27727" target="_blank" rel="noopener">Sovereign Grassroots Currencies: A CBDC Architecture for Credit and Monetary Policy (Full Version)</a>
+            <div class="m">
+              arXiv econ.GN
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27732" target="_blank" rel="noopener">Do Drug Consumption Rooms Reduce Drug-Related Hospitalizations? Evidence from Switzerland</a>
+            <div class="m">
+              arXiv econ.GN
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28372" target="_blank" rel="noopener">Shopping by algorithm: How agentic AI deploys human heuristics as a surrogate consumer</a>
+            <div class="m">
+              arXiv econ.GN
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2607.01561" target="_blank" rel="noopener">Decomposing Wage Stagnation: Employment Reallocation, Wage Structure,and Demographics</a>
+            <div class="m">
+              arXiv econ.GN
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/09/peter-thiel-on-ai-and-tech-stagnation.html" target="_blank" rel="noopener">Peter Thiel on AI and tech stagnation and democracy</a>
+            <div class="m">
+              Marginal Revolution
+ · 09-24 23:31 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://cepr.org/voxeu/columns/how-minimum-wages-reshape-firms-and-their-productivity-within" target="_blank" rel="noopener">How minimum wages reshape firms and their productivity from within</a>
+            <div class="m">
+              VoxEU (CEPR)
+ · 09-24 23:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://cepr.org/voxeu/columns/measuring-what-work-generative-ai-does-survey-evidence-versus-chat-logs" target="_blank" rel="noopener">Measuring what work generative AI does: Survey evidence versus chat logs</a>
+            <div class="m">
+              VoxEU (CEPR)
+ · 09-24 23:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/09/earth-fact-of-the-day-2.html" target="_blank" rel="noopener">Earth fact of the day</a>
+            <div class="m">
+              Marginal Revolution
+ · 09-24 18:58 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/09/thursday-assorted-links-571.html" target="_blank" rel="noopener">Thursday assorted links</a>
+            <div class="m">
+              Marginal Revolution
+ · 09-24 16:07 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/09/ca-91326-a-public-choice-mystery-investigation.html" target="_blank" rel="noopener">CA 91326: A Public Choice Mystery Investigation</a>
+            <div class="m">
+              Marginal Revolution
+ · 09-24 11:15 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/09/fear-of-data.html" target="_blank" rel="noopener">*Fear of Data*</a>
+            <div class="m">
+              Marginal Revolution
+ · 09-24 08:24 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/09/my-economics-rich-conversation-with-gita-gopinath.html" target="_blank" rel="noopener">My economics-rich Conversation with Gita Gopinath</a>
+            <div class="m">
+              Marginal Revolution
+ · 09-24 04:41 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27024" target="_blank" rel="noopener">Loss Choice or Model Choice? The Role of Forecast Level in Cryptocurrency Volatility Forecasting</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27113" target="_blank" rel="noopener">Active Portfolio Management in Concentrated Equity Markets</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27138" target="_blank" rel="noopener">Surface-Driven Stochastic Volatility for Commodity Options: Identification of Stochastic Vol-of-Vol and Leverage from Smile Dynamics</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27632" target="_blank" rel="noopener">Compliant AI Infrastructure for Regulated Finance: A tiered multi-agent framework with DLT audit trails for financial operations in DACH</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27636" target="_blank" rel="noopener">Multi-Agent AI Architecture for Regulated Insurers: A generic AI framework under Solvency II and the AI Act in Austria and Germany</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27785" target="_blank" rel="noopener">Financial Tail Risk Beyond Lipschitz Continuity via Semi-Discrete Optimal Transport</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27786" target="_blank" rel="noopener">Feasible Multi-Asset Optimal Execution under Cash Constraints</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28463" target="_blank" rel="noopener">Market Completeness and Optional Projections under Restricted Information</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.26398" target="_blank" rel="noopener">Weighted universal Value-at-Risk Superadditivity for discrete distributions</a>
+            <div class="m">
+              arXiv q-fin
+ · 09-24 04:00 · 3.0            </div>
+          </div>
+      </div>
+      <div>
+        <h3>AI · 25</h3>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.26926" target="_blank" rel="noopener">Experts Rise Where LLMs Disagree: Using Cross-Model Disagreement to Target Expert Effort in LLM Codebook Revision for Large-Scale Annotation</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27032" target="_blank" rel="noopener">LexLattice: Multilingual Extractive Summarization via Neural Cellular Automata on Document Hierarchies</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27043" target="_blank" rel="noopener">EduBehaviors: Assertion-based Schemas for Auditable Coding of Educational Dialogues</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27156" target="_blank" rel="noopener">Giving Credit Where It's Due: Redundancy-Aware Learning for Efficient Reasoning</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27373" target="_blank" rel="noopener">Attention Routing Stabilizes Early: Working-Set Inference for Recurrent Language Models</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27939" target="_blank" rel="noopener">From Sentiment Classification to Actionable and Responsible Feedback: A Scoping Review and Evidence Map of NLP in Student Evaluation of Teaching, 2015-2026</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27980" target="_blank" rel="noopener">Six Layers Less: Encoder Pruning for Whisper with Label-Free Recovery</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27981" target="_blank" rel="noopener">Risk-Controlled KV-Cache Eviction: From Memory Budgets to Risk Targets</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28007" target="_blank" rel="noopener">Evaluating Open-Weight LLMs for Turkish Domain Documents Under Retrieval and Hardware Constraints</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28270" target="_blank" rel="noopener">Predicting Quantization Price for Selecting PTQ Configurations Before Deployment</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28395" target="_blank" rel="noopener">Fine-Tuning LLMs for Translation: General Forgetting Mitigation Does Not Preserve MT-Specific Instruction Following</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28416" target="_blank" rel="noopener">Agent-Editing World Model: Rethinking World Modeling for LLM Agents</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28471" target="_blank" rel="noopener">Contrastive Learning for Authorship Verification</a>
+            <div class="m">
+              arXiv cs.LG (Learning)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.26907" target="_blank" rel="noopener">Small Cues, Big Consequences: Learning Pivotal Cues for Multimodal Meme Classification</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27067" target="_blank" rel="noopener">ChipMEM: Verification-Grounded Memory for EDA Agents</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27110" target="_blank" rel="noopener">Feed the Panel Dimensions, Not Verdicts: Rubric-Decomposed Fusion of Vision-Language Aesthetic Judges</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27158" target="_blank" rel="noopener">The Linear Representation Hypothesis Needs a Group Action</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27470" target="_blank" rel="noopener">DeltaS: Reading the Gated Linear Attention State for KV Cache Eviction in Streaming Video</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27532" target="_blank" rel="noopener">ProCredit: From Outcome Rewards to Progress Credit in Agentic Reinforcement Learning</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27581" target="_blank" rel="noopener">Does Step Law Transfer to Small-Scale Language Models? An Empirical Recalibration Below 59M Parameters</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27657" target="_blank" rel="noopener">FLEET: From Logits Entropy to Enhanced Trajectories in Text Generation</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.27749" target="_blank" rel="noopener">Evaluation of pre-trained models for pedagogical assessment of novel AI-assisted educational questions</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28029" target="_blank" rel="noopener">Tensor Decomposition of Transformer Key-Value Caches: Spectral Structure and Format Comparison</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28053" target="_blank" rel="noopener">Exact Quantile Balancing and Load-Error Injection for Mixture-of-Experts</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2609.28212" target="_blank" rel="noopener">Log-Depth Recurrent Language Modeling</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 09-24 04:00 · 3.54 · 2×            </div>
+          </div>
+      </div>
+  </div>
+</details>
+
+<footer>my_little_birds · 每天 07:00 JST 生成 · 兴趣定义在 <code>config/interests.md</code></footer>
+
+</div>
+</body>
+</html>
