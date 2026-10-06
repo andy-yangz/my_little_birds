@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>2026-10-06 · my_little_birds</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --fg: #1a1814;
+    --fg-soft: #5a5550;
+    --muted: #8a847d;
+    --bg: #f5f1ea;
+    --card: #fffdf8;
+    --card-hover: #fff8ed;
+    --accent: #b8500a;
+    --accent-soft: #f0dcc4;
+    --border: #e0d8cb;
+    --star: #d4a04a;
+    --shadow: 0 1px 2px rgba(60,40,20,.04);
+    --shadow-hover: 0 2px 4px rgba(60,40,20,.08), 0 8px 20px rgba(60,40,20,.04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fg: #ece8e0; --fg-soft: #b5ada3; --muted: #7a7268;
+      --bg: #16140f; --card: #1f1c16; --card-hover: #2a261d;
+      --accent: #f0a060; --accent-soft: #3a2818;
+      --border: #2e2a22; --star: #e8b96a;
+      --shadow: 0 1px 2px rgba(0,0,0,.3);
+      --shadow-hover: 0 2px 4px rgba(0,0,0,.4), 0 8px 20px rgba(0,0,0,.25);
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { background: var(--bg); }
+  body {
+    font-family: 'Inter', -apple-system, "Segoe UI", "Hiragino Sans", "Microsoft YaHei", sans-serif;
+    color: var(--fg); line-height: 1.55; margin: 0;
+    padding: 2.5rem 1.5rem 5rem;
+  }
+  .container { max-width: 1200px; margin: 0 auto; }
+
+  header.masthead {
+    border-bottom: 2px solid var(--fg); padding-bottom: 1.25rem; margin-bottom: 2rem;
+  }
+  .masthead h1 {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 700; font-size: 2.2rem;
+    margin: 0 0 .2rem; letter-spacing: -0.02em; font-style: italic;
+  }
+  .masthead .meta {
+    display: flex; gap: 1.25rem; align-items: baseline; flex-wrap: wrap;
+    color: var(--muted); font-size: .85rem; font-variant-numeric: tabular-nums;
+  }
+  .masthead .meta strong { color: var(--fg); font-weight: 600; }
+  .masthead .meta a { color: var(--accent); text-decoration: none; margin-left: auto; }
+
+  /* Two-column grid */
+  .columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  @media (max-width: 760px) {
+    .columns { grid-template-columns: 1fr; gap: 1rem; }
+    body { padding: 2rem 1rem 4rem; }
+  }
+  .column h2 {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+    font-size: 1.3rem; letter-spacing: -0.01em;
+    margin: 0 0 1rem; padding-bottom: .4rem;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: baseline; gap: .6rem;
+  }
+  .column h2 .count {
+    font-family: 'Inter', sans-serif; font-size: .75rem; font-weight: 500;
+    color: var(--muted); letter-spacing: 0;
+  }
+
+  /* Cluster card: collapsed by default, expand on click */
+  details.cluster {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px;
+    margin-bottom: .65rem; box-shadow: var(--shadow);
+    transition: box-shadow .15s ease, background .15s ease;
+  }
+  details.cluster:hover { background: var(--card-hover); box-shadow: var(--shadow-hover); }
+  details.cluster[open] { box-shadow: var(--shadow-hover); }
+  details.cluster > summary {
+    list-style: none; cursor: pointer; padding: .85rem 1.05rem;
+    display: flex; flex-direction: column; gap: .3rem;
+  }
+  details.cluster > summary::-webkit-details-marker { display: none; }
+  details.cluster > summary::after {
+    content: "▾"; color: var(--muted); position: absolute; right: 1.2rem;
+    transition: transform .2s ease;
+  }
+  details.cluster[open] > summary::after { transform: rotate(180deg); }
+  details.cluster > summary { position: relative; padding-right: 2.5rem; }
+
+  .card-meta {
+    display: flex; gap: .5rem; align-items: center; font-size: .72rem;
+    color: var(--muted);
+  }
+  .stars { color: var(--star); letter-spacing: .5px; font-size: .8rem; }
+  .stars .e { color: var(--border); }
+  .signals { font-variant-numeric: tabular-nums; display: flex; gap: .55rem; flex-wrap: wrap; }
+  .signals span { white-space: nowrap; }
+
+  .card-title {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+    font-size: 1.05rem; line-height: 1.3; letter-spacing: -0.005em;
+    color: var(--fg);
+  }
+  .card-tags { display: flex; flex-wrap: wrap; gap: .3rem; margin-top: .15rem; }
+  .tag {
+    background: var(--accent-soft); color: var(--accent);
+    padding: 1px 7px; border-radius: 8px; font-size: .68rem;
+  }
+
+  .cluster-body {
+    padding: 0 1.05rem 1rem; color: var(--fg-soft); font-size: .9rem;
+    border-top: 1px solid var(--border); padding-top: .9rem; margin-top: .2rem;
+  }
+  .cluster-body .summary { margin-bottom: .7rem; }
+  .cluster-body .sources { font-size: .78rem; color: var(--muted); }
+  .cluster-body .sources a { color: var(--fg-soft); text-decoration: none; border-bottom: 1px dotted var(--border); }
+  .cluster-body .sources a:hover { color: var(--accent); border-color: var(--accent); }
+  .cluster-body .sources .sep { margin: 0 .35rem; color: var(--border); }
+
+  /* Per-paper cards inside econ cluster body */
+  .papers { list-style: none; padding: 0; margin: .2rem 0 0; }
+  .papers li {
+    padding: .6rem 0;
+    border-top: 1px dashed var(--border);
+  }
+  .papers li:first-child { border-top: none; padding-top: 0; }
+  .papers .ptitle {
+    color: var(--fg); font-weight: 500; text-decoration: none;
+    font-size: .9rem; line-height: 1.35; display: block;
+  }
+  .papers .ptitle:hover { color: var(--accent); }
+  .papers .psource {
+    color: var(--muted); font-size: .7rem; margin-top: .15rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .papers .pline { font-size: .82rem; margin-top: .3rem; line-height: 1.45; color: var(--fg-soft); }
+  .papers .lbl {
+    display: inline-block; min-width: 2.4em; text-align: center;
+    font-size: .65rem; font-weight: 600; letter-spacing: .03em;
+    color: var(--accent); background: var(--accent-soft);
+    padding: 1px .4rem; border-radius: 3px;
+    margin-right: .4rem; vertical-align: 1px;
+  }
+
+  /* Sub-group header inside econ column */
+  .subgroup {
+    font-family: 'Fraunces', Georgia, serif; font-weight: 600;
+    font-size: 1rem; color: var(--accent);
+    margin: 1.4rem 0 .6rem; padding: 0 .1rem .25rem;
+    border-bottom: 1px dotted var(--border);
+    display: flex; align-items: baseline; gap: .45rem;
+  }
+  .subgroup:first-of-type { margin-top: 0; }
+  .subgroup .count { color: var(--muted); font-size: .72rem; font-weight: 400; }
+
+  details.raw {
+    margin-top: 3rem; border-top: 1px solid var(--border); padding-top: 1.25rem;
+  }
+  details.raw > summary {
+    cursor: pointer; color: var(--muted); font-size: .85rem;
+    padding: .35rem 0; list-style: none;
+  }
+  details.raw > summary::-webkit-details-marker { display: none; }
+  details.raw > summary::before { content: "▸ "; }
+  details.raw[open] > summary::before { content: "▾ "; }
+  .raw-cols {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 1rem;
+  }
+  @media (max-width: 760px) { .raw-cols { grid-template-columns: 1fr; gap: 1rem; } }
+  .raw-cols h3 {
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: .95rem;
+    margin: 0 0 .5rem; color: var(--muted);
+  }
+  .raw-item {
+    padding: .4rem 0; border-bottom: 1px dashed var(--border); font-size: .85rem;
+  }
+  .raw-item:last-child { border: none; }
+  .raw-item a { color: var(--fg); text-decoration: none; }
+  .raw-item a:hover { color: var(--accent); }
+  .raw-item .m { color: var(--muted); font-size: .72rem; margin-top: .1rem; font-variant-numeric: tabular-nums; }
+
+  footer {
+    margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    font-size: .76rem; color: var(--muted); text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header class="masthead">
+  <h1>my_little_birds</h1>
+  <div class="meta">
+    <strong>2026-10-06</strong>
+      <span>AI · <strong>25</strong></span>
+      <span>经济 · <strong>25</strong></span>
+    <a href="index.html">归档 →</a>
+  </div>
+</header>
+
+
+<div class="columns">
+</div>
+
+<details class="raw">
+  <summary>全部精选条目（50）</summary>
+  <div class="raw-cols">
+      <div>
+        <h3>AI · 25</h3>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02492" target="_blank" rel="noopener">Right Order, Wrong Scale: Auditing LLM Judges for Occupational AI Measurement</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 10-05 04:00 · 4.26 · 5×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02267" target="_blank" rel="noopener">Fast Models, Slow Evidence: A Paired and Self-Audited Evaluation of System-1 Decision Models for LLM Agent Harnesses</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02616" target="_blank" rel="noopener">VERSE: Verified Self-Evolving Optimizer for Agent Harnesses</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02808" target="_blank" rel="noopener">ROUTEAUDIT: Interaction-Aware Identification for Budgeted Multi-Verifier Routing</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02828" target="_blank" rel="noopener">FSPO: Policy-Consistent Risk and Pareto-Feasible Control for Budgeted LLM RL Post-Training</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.03025" target="_blank" rel="noopener">Verifiable, Articulable, and Tacit Components of Preference</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02359" target="_blank" rel="noopener">Lexicographic Multi-Objective On-Policy Distillation</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02438" target="_blank" rel="noopener">Are you Synthesizing or Recalling? Evaluating LLMs on Algorithmic Code Retrieval</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02594" target="_blank" rel="noopener">How Causality Bridges the Semantic Gap</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02665" target="_blank" rel="noopener">Large Language Continuous Diffusion Models</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02670" target="_blank" rel="noopener">LEAP: Learning Efficient Action Proposals For LLM Agents</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02781" target="_blank" rel="noopener">OPD Before RL: Warm-Starting Rubric-Based RL with On-Policy Distillation</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02994" target="_blank" rel="noopener">Sentry: Learning to Recover from LLM Agent Failures at Test Time</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.03027" target="_blank" rel="noopener">Tailoring the Quantization Space for 1-Bit KV Cache Compression</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.03124" target="_blank" rel="noopener">The Fragility of Trigger-Tag Mechanisms for Misuse Detection in Open-Weight LLMs</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.03190" target="_blank" rel="noopener">Not Until the Evidence Says So: Teaching LLM Investigators When to Close a Case</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.03329" target="_blank" rel="noopener">SyntaxBench: A Statistical Diagnostic Framework for Character-Level Reasoning in Large Language Models</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2603.13911" target="_blank" rel="noopener">On the Tip of the Tongue: Why LLMs Hallucinate Answers They Can Decode</a>
+            <div class="m">
+              arXiv cs.CL (NLP)
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2512.21439" target="_blank" rel="noopener">Morality is Contextual: Learning Interpretable Moral Contexts from Human Data with Probabilistic Clustering and Large Language Models</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2604.14128" target="_blank" rel="noopener">Rhetorical Questions in LLM Representations: A Linear Probing Study</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.06639" target="_blank" rel="noopener">Recursive Agent Optimization</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.17873" target="_blank" rel="noopener">HINT-SD: Targeted Hindsight Self-Distillation for Long-Horizon Agents</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2605.23215" target="_blank" rel="noopener">FastKernels: Benchmarking GPU Kernel Generation in Production</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2606.00467" target="_blank" rel="noopener">On the Limits of LLM Adaptability: Impact of Model-Internalized Priors on Annotation Task Performance</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2607.04223" target="_blank" rel="noopener">Sentence-Level Context Sensitivity as a Training-Free Detector of Unsupported Content, Evaluated Against Trained Verifiers</a>
+            <div class="m">
+              arXiv cs.AI
+ · 10-05 04:00 · 3.86 · 3×            </div>
+          </div>
+      </div>
+      <div>
+        <h3>经济 · 25</h3>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.03250" target="_blank" rel="noopener">No Women No Innovation? The Effect of Women on Boards on Hard and Soft Innovation in SMEs</a>
+            <div class="m">
+              arXiv econ.GN
+ · 10-05 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2508.08152" target="_blank" rel="noopener">Optimal Fees for Liquidity Provision in Automated Market Makers</a>
+            <div class="m">
+              arXiv econ.GN
+ · 10-05 04:00 · 3.54 · 2×            </div>
+          </div>
+          <div class="raw-item">
+            <a href="http://rieti.go.jp/jp/events/bbl/26090701.html" target="_blank" rel="noopener">2022年に提供開始した輸出入申告データを活用した研究とそれに基づく政策提言・政策評価の可能性</a>
+            <div class="m">
+              RIETI 日本経済産業研究所
+ · 10-06 01:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://cepr.org/voxeu/columns/venture-capital-global-perspective" target="_blank" rel="noopener">Venture capital – a global perspective</a>
+            <div class="m">
+              VoxEU (CEPR)
+ · 10-05 23:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/10/monday-assorted-links-580.html" target="_blank" rel="noopener">Monday assorted links</a>
+            <div class="m">
+              Marginal Revolution
+ · 10-05 17:23 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/10/authenticity-is-exactly-the-same-as-phoniness.html" target="_blank" rel="noopener">“Authenticity is exactly the same as phoniness.”</a>
+            <div class="m">
+              Marginal Revolution
+ · 10-05 15:45 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/10/the-greg-clark-symposium.html" target="_blank" rel="noopener">The Greg Clark Symposium</a>
+            <div class="m">
+              Marginal Revolution
+ · 10-05 11:21 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/10/china-fact-of-the-day-82.html" target="_blank" rel="noopener">China fact of the day</a>
+            <div class="m">
+              Marginal Revolution
+ · 10-05 06:56 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="http://rieti.go.jp/jp/publications/nts/26e069.html" target="_blank" rel="noopener">資本蓄積に個別リスクがあるような貨幣的内生成長モデルの研究</a>
+            <div class="m">
+              RIETI 日本経済産業研究所
+ · 10-05 05:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://marginalrevolution.com/marginalrevolution/2026/10/crime-in-covid-times.html" target="_blank" rel="noopener">Crime in Covid Times</a>
+            <div class="m">
+              Marginal Revolution
+ · 10-05 04:52 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02834" target="_blank" rel="noopener">Axient: Canonical Protocol-Graph Composition for Leveraged Event Markets: Single State Authority, Atomic Composition, Durable Sagas, and Exactly-Once Recovery</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02838" target="_blank" rel="noopener">Axient: Manifest-Bound Evidence for On-Chain Financial Protocols: Seven-Layer Derivation, Correlation, Tamper Rejection, and Reproducible Claim Promotion</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02863" target="_blank" rel="noopener">Multi-Agent AI as a Nested Principal-Agent Problem in Private Wealth Management: Mandate Representation and Evidence Control in Switzerland, Germany and Austria</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.02917" target="_blank" rel="noopener">Event History Over Scale: Compact Transformers for Low-Latency Limit Order Book Forecasting</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.03076" target="_blank" rel="noopener">Shapley-based Structural Analysis of Neural Calibration for Stochastic Volatility Models</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.03406" target="_blank" rel="noopener">PreFER: Interactive Robo-Advisor with Scoring Mechanism</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2610.03174" target="_blank" rel="noopener">FinNextAssist: Towards Professional Financial Deep Research Assistant</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2410.20060" target="_blank" rel="noopener">Constrained portfolio optimization in a life-cycle model: A deep pricing kernel approach</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2502.12774" target="_blank" rel="noopener">When defaults cannot be hedged: xVA calculations via local risk-minimization</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2509.09452" target="_blank" rel="noopener">Optimal Investment and Consumption in a Stochastic Factor Model</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://arxiv.org/abs/2602.08120" target="_blank" rel="noopener">Optimal Quantum Speedups for Repeatedly Nested Expectation Estimation</a>
+            <div class="m">
+              arXiv q-fin
+ · 10-05 04:00 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="http://rieti.go.jp/jp/publications/nts/26j038.html" target="_blank" rel="noopener">1990年代後半から2010年代までの日本の半導体産業に関わる政策史</a>
+            <div class="m">
+              RIETI 日本経済産業研究所
+ · 10-05 01:40 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="http://rieti.go.jp/jp/publications/nts/26e068.html" target="_blank" rel="noopener">TFPがCO₂原単位に与える影響分析</a>
+            <div class="m">
+              RIETI 日本経済産業研究所
+ · 10-05 01:30 · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35800" target="_blank" rel="noopener">Inference for Regression with Clustered or Spatially Correlated Data I: Framework and Clustering -- by A. Colin Cameron, Douglas L. Miller</a>
+            <div class="m">
+              NBER Working Papers
+ · 3.0            </div>
+          </div>
+          <div class="raw-item">
+            <a href="https://nber.org/papers/w35833" target="_blank" rel="noopener">Crowding Out Temptation: Experimental Evidence on Savings and Health Behaviors in Kenya -- by Harsha Thirumurthy, Elizabeth Bair, Dean Yang, Teniola Egbe, Benard Ayieko, Julius Wesonga, Sue Napierala, Connie Celum, Mary Putt, Carol S. Camlin, Mark Ayallo</a>
+            <div class="m">
+              NBER Working Papers
+ · 3.0            </div>
+          </div>
+      </div>
+  </div>
+</details>
+
+<footer>my_little_birds · 每天 07:00 JST 生成 · 兴趣定义在 <code>config/interests.md</code></footer>
+
+</div>
+</body>
+</html>
